@@ -3,836 +3,455 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>느닷학 乍有學 — 남학(南學) 대시보드</title>
+<title>느닷학 乍有學 — 남학(南學)</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-:root {
-  --main: #1A3A2A;
-  --sub:  #4A7C59;
-  --acc:  #8B5E3C;
-  --light:#DCF0E1;
-  --pale: #F5EEE4;
-  --bg:   #F7F5F0;
-  --card: #FFFFFF;
-  --text: #1E1E1E;
-  --muted:#6B6B6B;
-  --line: #E0DAD2;
-  --header-h: 56px;
-  --tab-h: 44px;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
-
-/* ── 헤더 ── */
-#header{
-  position:fixed;top:0;left:0;right:0;z-index:200;
-  height:var(--header-h);
-  background:var(--main);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 24px;
-  box-shadow:0 2px 12px rgba(0,0,0,0.2);
-}
-.hd-left{display:flex;align-items:center;gap:14px;}
-.hd-title{
-  font-family:'Noto Serif KR',serif;
-  font-size:18px;font-weight:700;color:#fff;
-  letter-spacing:-0.01em;
-}
-.hd-badge{
-  background:rgba(139,94,60,0.35);
-  border:1px solid rgba(139,94,60,0.6);
-  color:rgba(245,238,228,0.9);
-  font-size:11px;padding:3px 10px;border-radius:12px;
-  letter-spacing:0.04em;
-}
-.hd-stats{display:flex;gap:28px;align-items:center;}
-.hd-stat{text-align:center;}
-.hd-stat .val{
-  font-size:17px;font-weight:700;color:#fff;
-  font-family:'Noto Serif KR',serif;
-}
-.hd-stat .lbl{font-size:10px;color:rgba(220,240,225,0.6);margin-top:1px;}
-.hd-right{display:flex;gap:8px;align-items:center;}
-.hd-btn{
-  background:rgba(255,255,255,0.1);
-  border:1px solid rgba(255,255,255,0.2);
-  color:rgba(220,240,225,0.85);
-  font-size:12px;padding:6px 14px;border-radius:4px;
-  cursor:pointer;transition:background 0.15s;
-  font-family:'Noto Sans KR',sans-serif;
-}
-.hd-btn:hover{background:rgba(255,255,255,0.18);}
-
-/* ── 탭 ── */
-#tabs{
-  position:fixed;top:var(--header-h);left:0;right:0;z-index:190;
-  height:var(--tab-h);
-  background:#fff;
-  border-bottom:1px solid var(--line);
-  display:flex;align-items:flex-end;
-  padding:0 24px;
-  overflow-x:auto;
-  scrollbar-width:none;
-}
+:root{--main:#1A3A2A;--sub:#4A7C59;--acc:#8B5E3C;--light:#DCF0E1;--pale:#F5EEE4;--bg:#F7F5F0;--card:#fff;--text:#1E1E1E;--muted:#6B6B6B;--line:#E0DAD2;--hh:56px;--th:44px;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.85;}
+#hdr{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--hh);background:var(--main);display:flex;align-items:center;justify-content:space-between;padding:0 24px;box-shadow:0 2px 16px rgba(0,0,0,.25);}
+.hl{display:flex;align-items:center;gap:12px;}
+.htit{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700;color:#fff;}
+.hbadge{background:rgba(139,94,60,.35);border:1px solid rgba(139,94,60,.6);color:rgba(245,238,228,.9);font-size:11px;padding:3px 10px;border-radius:12px;letter-spacing:.04em;}
+.hstat{display:flex;gap:24px;}.hst{text-align:center;}
+.hst .v{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;color:#fff;}
+.hst .l{font-size:10px;color:rgba(220,240,225,.6);}
+.hr2{display:flex;gap:8px;}
+.hbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(220,240,225,.85);font-size:12px;padding:6px 14px;border-radius:4px;cursor:pointer;text-decoration:none;font-family:'Noto Sans KR',sans-serif;transition:background .15s;}
+.hbtn:hover{background:rgba(255,255,255,.2);}
+#tabs{position:fixed;top:var(--hh);left:0;right:0;z-index:200;height:var(--th);background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:flex-end;padding:0 24px;overflow-x:auto;scrollbar-width:none;}
 #tabs::-webkit-scrollbar{display:none;}
-.tab{
-  padding:10px 18px;
-  font-size:13px;color:var(--muted);
-  cursor:pointer;white-space:nowrap;
-  border-bottom:2px solid transparent;
-  transition:color 0.15s,border-color 0.15s;
-}
-.tab:hover{color:var(--sub);}
-.tab.active{color:var(--main);border-bottom-color:var(--main);font-weight:500;}
-
-/* ── 메인 콘텐츠 ── */
-#main{
-  margin-top:calc(var(--header-h) + var(--tab-h));
-  padding:24px;
-  max-width:1400px;
-  margin-left:auto;margin-right:auto;
-}
-
-/* ── 안내 배너 ── */
-.banner{
-  background:rgba(139,94,60,0.08);
-  border:1px solid rgba(139,94,60,0.25);
-  border-radius:6px;
-  padding:12px 20px;
-  margin-bottom:20px;
-  font-size:13px;color:var(--acc);
-  line-height:1.6;
-}
-.banner strong{font-weight:600;}
-
-/* ── 검색 ── */
-.search-wrap{margin-bottom:20px;}
-.search-wrap input{
-  width:100%;
-  border:1px solid var(--line);
-  border-radius:6px;
-  padding:10px 16px;
-  font-size:13px;
-  font-family:'Noto Sans KR',sans-serif;
-  background:#fff;
-  color:var(--text);
-  outline:none;
-  transition:border-color 0.15s;
-}
-.search-wrap input:focus{border-color:var(--sub);}
-
-/* ── 요약 카드 ── */
-.cards-row{
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:12px;
-  margin-bottom:20px;
-}
-.sum-card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:8px;
-  padding:18px 16px;
-  position:relative;
-}
-.sum-card .icon{
-  width:28px;height:28px;border-radius:6px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;
-  margin-bottom:10px;
-}
-.sum-card .val{
-  font-size:26px;font-weight:700;
-  font-family:'Noto Serif KR',serif;
-  color:var(--main);line-height:1.1;
-}
-.sum-card .lbl{font-size:12px;color:var(--muted);margin-top:4px;}
-.sum-card .badge{
-  display:inline-block;
-  font-size:11px;padding:2px 8px;border-radius:10px;
-  margin-top:6px;font-weight:500;
-}
-.badge-green{background:#EAF5EE;color:#2E7D50;}
-.badge-acc{background:#F5EEE4;color:#8B5E3C;}
-.badge-red{background:#FEECEC;color:#C0392B;}
-
-.icon-1{background:#EAF5EE;color:#2E7D50;}
-.icon-2{background:#E8F0FE;color:#3455B3;}
-.icon-3{background:#FEF9E7;color:#B7770D;}
-.icon-4{background:#F5EEE4;color:#8B5E3C;}
-.icon-5{background:#FEECEC;color:#C0392B;}
-.icon-6{background:#F3F3F3;color:#555;}
-
-/* ── 차트 행 ── */
-.charts-row{
-  display:grid;
-  grid-template-columns:1fr 1.3fr 1fr;
-  gap:16px;
-}
-.chart-card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:8px;
-  padding:20px;
-}
-.chart-card .ch-title{
-  font-size:13px;font-weight:500;
-  color:var(--text);margin-bottom:16px;
-}
-.chart-wrap{position:relative;}
-
-/* ── 탭 콘텐츠 패널 ── */
-.tab-panel{display:none;}
-.tab-panel.active{display:block;}
-
-/* ── 개요 탭 내용 ── */
-.overview-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:16px;
-  margin-top:20px;
-}
-.text-card{
-  background:var(--card);border:1px solid var(--line);
-  border-radius:8px;padding:28px 32px;
-}
-.text-card h3{
-  font-family:'Noto Serif KR',serif;
-  font-size:18px;font-weight:700;color:var(--main);
-  margin-bottom:16px;padding-bottom:12px;
-  border-bottom:2px solid var(--light);
-}
-.text-card p{font-size:14px;color:#333;line-height:1.9;margin-bottom:14px;}
-.text-card p:last-child{margin-bottom:0;}
-
-.seed-inline{
-  border-left:3px solid var(--acc);
-  background:var(--pale);
-  padding:12px 16px;border-radius:0 4px 4px 0;
-  margin:16px 0;
-}
-.seed-inline .s-label{font-size:10px;color:var(--acc);letter-spacing:0.12em;font-weight:600;margin-bottom:4px;}
-.seed-inline p{font-family:'Noto Serif KR',serif;font-size:14px;color:var(--main);font-weight:600;line-height:1.7;margin:0;}
-
-.term-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);}
-.term-row:last-child{border-bottom:none;}
-.term-wd{font-weight:600;color:var(--sub);min-width:80px;font-size:14px;}
-.term-df{font-size:13px;color:var(--muted);line-height:1.7;}
-
-/* ── 장별 탭 ── */
-.chapter-header{
-  background:var(--main);color:#fff;
-  border-radius:8px;padding:28px 32px;
-  margin-bottom:16px;
-}
-.chapter-header .ch-num{
-  font-size:11px;letter-spacing:0.15em;
-  color:rgba(220,240,225,0.6);margin-bottom:8px;
-}
-.chapter-header h2{
-  font-family:'Noto Serif KR',serif;
-  font-size:24px;font-weight:700;color:#fff;
-  margin-bottom:8px;
-}
-.chapter-header .ch-sub{
-  font-size:14px;color:rgba(220,240,225,0.75);
-}
-.chapter-body{
-  display:grid;grid-template-columns:1fr 1fr;gap:16px;
-}
-.chapter-body.single{grid-template-columns:1fr;}
-
-/* ── 단어 빈도 탭 ── */
-.freq-section{margin-top:4px;}
-.freq-intro{
-  background:var(--card);border:1px solid var(--line);
-  border-radius:8px;padding:20px 24px;margin-bottom:16px;
-}
-.freq-intro p{font-size:14px;color:#333;line-height:1.8;}
-.freq-highlight{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;
-}
-.freq-hl-card{
-  background:var(--pale);border:1px solid rgba(139,94,60,0.2);
-  border-radius:6px;padding:16px;text-align:center;
-}
-.freq-hl-card .fword{
-  font-family:'Noto Serif KR',serif;
-  font-size:28px;font-weight:700;color:var(--main);
-}
-.freq-hl-card .fcnt{font-size:13px;color:var(--acc);font-weight:600;margin-top:4px;}
-.freq-hl-card .fdesc{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5;}
-
-.key-sentence{
-  background:var(--main);border-radius:8px;
-  padding:32px;text-align:center;margin-top:16px;
-}
-.key-sentence .ks-label{
-  font-size:11px;letter-spacing:0.15em;color:rgba(220,240,225,0.6);margin-bottom:12px;
-}
-.key-sentence .ks-text{
-  font-family:'Noto Serif KR',serif;
-  font-size:20px;font-weight:700;color:#fff;line-height:1.6;
-}
-.key-sentence .ks-sub{
-  margin-top:16px;font-size:13px;color:rgba(220,240,225,0.65);line-height:1.8;
-}
-
-/* ── 반응형 ── */
-@media(max-width:900px){
-  .cards-row{grid-template-columns:repeat(3,1fr);}
-  .charts-row{grid-template-columns:1fr;}
-  .overview-grid{grid-template-columns:1fr;}
-  .chapter-body{grid-template-columns:1fr;}
-  .freq-highlight{grid-template-columns:1fr 1fr;}
-}
-@media(max-width:600px){
-  .cards-row{grid-template-columns:repeat(2,1fr);}
-  .hd-stats{display:none;}
+.tab{padding:10px 18px;font-size:13px;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;flex-shrink:0;}
+.tab:hover{color:var(--sub);}.tab.on{color:var(--main);border-bottom-color:var(--main);font-weight:600;}
+#body{margin-top:calc(var(--hh) + var(--th));max-width:800px;margin-left:auto;margin-right:auto;padding:40px 32px 80px;}
+.pnl{display:none;}.pnl.on{display:block;}
+.book-header{background:var(--main);border-radius:10px;padding:36px 40px;margin-bottom:36px;}
+.book-header .chnum{font-size:11px;letter-spacing:.18em;color:rgba(220,240,225,.6);margin-bottom:10px;}
+.book-header h1{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:700;color:#fff;line-height:1.35;margin-bottom:10px;}
+.book-header .chsub{font-size:14px;color:rgba(220,240,225,.72);}
+.book p{font-size:16px;color:var(--text);line-height:1.95;margin-bottom:18px;}
+.book p.bold{font-weight:600;color:var(--main);}.book p.gray{color:var(--muted);font-style:italic;}
+.book p.center{text-align:center;}.book p.right{text-align:right;}
+.h2{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;color:var(--main);margin:44px 0 16px;padding-bottom:10px;border-bottom:2px solid var(--light);}
+.seed{border-left:4px solid var(--acc);background:var(--pale);padding:16px 20px;border-radius:0 6px 6px 0;margin:24px 0;}
+.seed .sl{font-size:10px;color:var(--acc);letter-spacing:.14em;font-weight:700;margin-bottom:6px;}
+.seed p{font-family:'Noto Serif KR',serif;font-size:15px;color:var(--main);font-weight:600;line-height:1.75;margin:0;}
+.term{display:flex;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);}
+.term:last-of-type{border-bottom:none;}
+.tw{font-weight:700;color:var(--sub);min-width:90px;font-size:15px;padding-top:2px;flex-shrink:0;}
+.td{font-size:14px;color:var(--muted);line-height:1.75;}
+.practice{background:#F0F8F3;border:1px solid #C8E6D4;border-radius:8px;padding:22px 26px;margin:32px 0;}
+.practice .ptit{font-size:13px;font-weight:700;color:var(--sub);margin-bottom:12px;}
+.practice ol,.qs ol{padding-left:20px;}
+.practice li,.qs li{font-size:14px;color:#333;line-height:1.8;margin-bottom:6px;}
+.qs{background:var(--pale);border:1px solid rgba(139,94,60,.2);border-radius:8px;padding:22px 26px;margin:16px 0 32px;}
+.qs .qtit{font-size:13px;font-weight:700;color:var(--acc);margin-bottom:12px;}
+.case{background:#fff;border:1px solid var(--line);border-left:4px solid var(--sub);border-radius:0 8px 8px 0;padding:22px 26px;margin:24px 0;}
+.case .ctit{font-size:13px;font-weight:700;color:var(--sub);margin-bottom:10px;}
+.hr{border:none;border-top:1px solid var(--line);margin:48px 0;}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px;}
+.card .ic{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-bottom:10px;}
+.card .cv{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:var(--main);line-height:1.1;}
+.card .cl{font-size:12px;color:var(--muted);margin-top:4px;}
+.card .cb{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;margin-top:6px;font-weight:500;}
+.bg1{background:#EAF5EE;color:#2E7D50;}.bg2{background:#E8F0FE;color:#3455B3;}.bg3{background:#FEF9E7;color:#B7770D;}
+.bg4{background:#F5EEE4;color:#8B5E3C;}.bg5{background:#FEECEC;color:#C0392B;}.bg6{background:#F3F3F3;color:#555;}
+.cbg{background:#EAF5EE;color:#2E7D50;}.cba{background:#F5EEE4;color:#8B5E3C;}.cbr{background:#FEECEC;color:#C0392B;}
+.charts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:28px;}
+.ch{background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px;}
+.ch .chtit{font-size:13px;font-weight:500;color:var(--text);margin-bottom:14px;}
+.chwrap{position:relative;}
+.fhl{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0 28px;}
+.fhc{background:var(--pale);border:1px solid rgba(139,94,60,.2);border-radius:8px;padding:18px;text-align:center;}
+.fhc .fw{font-family:'Noto Serif KR',serif;font-size:32px;font-weight:700;color:var(--main);}
+.fhc .fc{font-size:13px;color:var(--acc);font-weight:600;margin-top:4px;}
+.fhc .fd{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;}
+.ksbox{background:var(--main);border-radius:10px;padding:36px;text-align:center;margin-top:28px;}
+.ksbox .ksl{font-size:11px;letter-spacing:.15em;color:rgba(220,240,225,.6);margin-bottom:14px;}
+.ksbox .kst{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#fff;line-height:1.7;}
+.ksbox .kss{margin-top:18px;font-size:13px;color:rgba(220,240,225,.65);line-height:1.9;}
+@media(max-width:700px){
+  #body{padding:24px 16px 60px;}
+  .cards{grid-template-columns:repeat(2,1fr);}
+  .charts{grid-template-columns:1fr;}
+  .fhl{grid-template-columns:1fr 1fr;}
+  .hstat{display:none;}
+  .book-header{padding:24px;}
+  .book-header h1{font-size:20px;}
 }
 </style>
 </head>
 <body>
-
-<!-- 헤더 -->
-<div id="header">
-  <div class="hd-left">
-    <div class="hd-title">느닷학 乍有學<span style="font-weight:300;font-size:14px;opacity:0.7;margin-left:6px;">남학(南學)</span></div>
-    <div class="hd-badge">Neudat-hak · Philosophy of Spontaneous Rising</div>
+<div id="hdr">
+  <div class="hl">
+    <div class="htit">느닷학 乍有學 <span style="font-weight:300;font-size:13px;opacity:.7">남학(南學)</span></div>
+    <div class="hbadge">Neudat-hak · Philosophy of Spontaneous Rising</div>
   </div>
-  <div class="hd-stats">
-    <div class="hd-stat"><div class="val">5</div><div class="lbl">장(章)</div></div>
-    <div class="hd-stat"><div class="val">26</div><div class="lbl">그림</div></div>
-    <div class="hd-stat"><div class="val">2,132</div><div class="lbl">고유 단어</div></div>
-    <div class="hd-stat"><div class="val">74</div><div class="lbl">그(最多)</div></div>
+  <div class="hstat">
+    <div class="hst"><div class="v">5</div><div class="l">장(章)</div></div>
+    <div class="hst"><div class="v">26</div><div class="l">그림</div></div>
+    <div class="hst"><div class="v">2,132</div><div class="l">고유 단어</div></div>
+    <div class="hst"><div class="v">74</div><div class="l">그(最多)</div></div>
   </div>
-  <div class="hd-right">
-    <a href="https://github.com/neodothaek-del/neodot" class="hd-btn" target="_blank">⊕ GitHub</a>
-    <a href="https://github.com/neodothaek-del/neodot/raw/main/느닷학_v9.docx" class="hd-btn" target="_blank">📄 docx</a>
-    <a href="https://docs.google.com/document/d/e/2PACX-1vR1yO6YdP9z9cyVSLbXvyY0ECTD1jWj1W__1JO4xOvwexbsZehiKUI42W0hfc8uFg/pub" class="hd-btn" target="_blank">📖 내용보기</a>
+  <div class="hr2">
+    <a href="https://github.com/neodothaek-del/neodot" class="hbtn" target="_blank">⊕ GitHub</a>
+    <a href="https://github.com/neodothaek-del/neodot/raw/main/%EB%8A%90%EB%8B%B7%ED%95%99_v9.docx" class="hbtn" target="_blank">📄 docx</a>
   </div>
 </div>
-
-<!-- 탭 -->
 <div id="tabs">
-  <div class="tab active" onclick="switchTab('overview',this)">개요</div>
-  <div class="tab" onclick="switchTab('ch1',this)">1장 · 오인것</div>
-  <div class="tab" onclick="switchTab('ch2',this)">2장 · 삼원론</div>
-  <div class="tab" onclick="switchTab('ch3',this)">3장 · 말로지</div>
-  <div class="tab" onclick="switchTab('ch4',this)">4장 · 쪽이나</div>
-  <div class="tab" onclick="switchTab('ch5',this)">5장 · 온일것</div>
-  <div class="tab" onclick="switchTab('freq',this)">낱말 빈도</div>
-  <div class="tab" onclick="switchTab('appendix',this)">별책 · 두레박과 샘</div>
+  <div class="tab on" onclick="go('overview',this)">개요</div>
+  <div class="tab" onclick="go('open',this)">여는 글</div>
+  <div class="tab" onclick="go('ch1',this)">1장 · 오인것</div>
+  <div class="tab" onclick="go('ch2',this)">2장 · 삼원론</div>
+  <div class="tab" onclick="go('ch3',this)">3장 · 말로지</div>
+  <div class="tab" onclick="go('ch4',this)">4장 · 쪽이나</div>
+  <div class="tab" onclick="go('ch5',this)">5장 · 온일것</div>
+  <div class="tab" onclick="go('close',this)">닫는 글</div>
+  <div class="tab" onclick="go('roots',this)">뿌리들</div>
+  <div class="tab" onclick="go('freq',this)">낱말 빈도</div>
+  <div class="tab" onclick="go('appendix',this)">별책 · 두레박과 샘</div>
+</div>
+<div id="body">
+
+<!-- 개요 -->
+<div id="pnl-overview" class="pnl on">
+<div class="cards">
+  <div class="card"><div class="ic bg1">느</div><div class="cv">느닷있음</div><div class="cl">핵심 개념</div><div class="cb cbg">전체 17회 등장</div></div>
+  <div class="card"><div class="ic bg2">장</div><div class="cv">5장</div><div class="cl">오인것→쪽이나→온일것</div><div class="cb cba">여는글+닫는글+뿌리들</div></div>
+  <div class="card"><div class="ic bg3">그</div><div class="cv">74회</div><div class="cl">가장 많이 나온 낱말</div><div class="cb cba">가리키는 책의 증거</div></div>
+  <div class="card"><div class="ic bg4">남</div><div class="cv">남학(南學)</div><div class="cl">부제</div><div class="cb cba">늘 햇살 비치는 쪽</div></div>
+  <div class="card"><div class="ic bg5">삶</div><div class="cv">28회</div><div class="cl">삶의+삶을+삶이 합계</div><div class="cb cbr">느닷있음(17)보다 많다</div></div>
+  <div class="card"><div class="ic bg6">이</div><div class="cv">이름</div><div class="cl">완성의 형태</div><div class="cb" style="background:#f0f0f0;color:#555">살아선 우리 · 죽어선 그리움</div></div>
+</div>
+<div class="charts">
+  <div class="ch"><div class="chtit">낱말 빈도 (상위 10)</div><div class="chwrap" style="height:240px"><canvas id="cFreq"></canvas></div></div>
+  <div class="ch"><div class="chtit">말로지 7자 빈도</div><div class="chwrap" style="height:240px"><canvas id="cMal"></canvas></div></div>
+  <div class="ch"><div class="chtit">3대 개념 비중</div><div class="chwrap" style="height:240px"><canvas id="cCon"></canvas></div></div>
+</div>
+<div class="book">
+  <div class="seed"><div class="sl">씨앗말</div><p>느닷있음 → 참말 → 차려가는 삶 → 이름(고맙고 그리워 불리는 너님)</p></div>
+  <p>이 페이지는 느닷학(乍有學)의 전체 내용을 웹에서 바로 읽을 수 있도록 만들었습니다. 위 탭을 눌러 각 장을 읽으세요. GitHub 버튼으로 저장소를, docx 버튼으로 파일을 받으실 수 있습니다.</p>
+  <p style="font-size:13px;color:var(--muted)">김양욱(선화애비) 저 · Claude(클로드) 함께 씀 · 2025</p>
+</div>
 </div>
 
-<!-- 메인 -->
-<div id="main">
+<!-- 여는 글 -->
+<div id="pnl-open" class="pnl">
+<div class="book-header"><div class="chnum">여는 글 · PROLOGUE</div><h1>느닷학이란 무엇인가</h1><div class="chsub">느닷있음에서 이름으로 — AI 시대에 사람답게 솟아오르는 남학(南學)의 길</div></div>
+<div class="book">
+<p>느닷학(乍有學, 사유학)은 질문,</p>
+<p>네. 바탕을 물음,</p>
+<p>딛고있는 바닥이 꺼지지 않을것이라는 믿음에서 시작, 네. 비롯합니다.</p>
+<p class="gray">乍有(사유)의 乍(사, 잠깐·갑자기)는 '잠깐', '갑자기'라는 뜻으로, 시간의 짧음이나 돌발적인 상황을 나타냅니다. 원래는 바느질하는 모습에서 '만들다'는 뜻이었다고 하나…, 이후 '잠깐'이라는 뜻으로 주로 쓰이게 되었고, 詐(사, 속일 사) 등 다른 한자의 부수가 되기도 합니다. 라고 구글은 말합니다. 그런데 말 입니다 ?</p>
+<p>당신은 지금 어디를 향해 살고 있습니까?</p>
+<p>우리는 왜 사는거죠 ? AI가 스르륵 휙 하고 죄다 해 주는데 ?</p>
+<p>사람이 사람다울 수를 찾던 그 때, 동쪽 하늘이 밝아올 때를 바라던 이른바 동학(東學, 동쪽 배움)은 하늘님을 불렀습니다. 새 세상을 열겠다 했습니다. 그 뜨거움은 참이었습니다.</p>
+<p>그러나 바로 지금 오늘 느닷있음의 길은 묻습니다. 하늘님 없이도 사람은 사람답게 살 수 있지 않겠는가? 라고요!</p>
+<p>남(南)은 방향 네. 네 쪽입니다. 늘 햇살이 비치는 쪽. 넘어의 너머. 어떤 신도 없고, 어떤 이념도 없이, 오직 사람이 사람으로서 자신의 믿음과 바탕을 물어보며 차려가는 쪽.</p>
+<p>느닷학(乍有學)의 출발은 단 하나입니다. 이미 차고 넘치도록 있는 사람이라는 것의 제목과 같은 '느닷있음'. 미리 알림 없이도, 하찮게 여겨 주책 없이도, 그러나 분명하게 내 안에서 솟아오르는, 이 나를 나답게 이끌어 주던 그 것.</p>
+<p>이 것이 삶의 실마리, 네. 실+머리입니다.</p>
+<p>개나 소나 닭도 심지어 나무도 그러더군요. 다만 말을 못 할 뿐이지…. 건드리면 스스로 오므리는 미모사(Mimosa)처럼. 느닷있음은 살아있는 것이라면 이미 벌써 갖고 있습니다.</p>
+<p>이 글은 그 느닷있음에서 비롯해서, 참말을 거쳐, 겉짓말 넘어의 너머, 곧 그저 그냥 반가워서 부르고 부르던 이름에서 고마워 불리우는 이름으로 완성되는 사람의 길을 함께 차려갑니다.</p>
+<p>거창,쵝오,끝내…줘 따위 하지 않아도 됩니다. 어렵지 않아도 됩니다. 다만 또렷하고 야무지게. 네. 어짊에 이르는 길.</p>
+<p>이것이 느닷학(乍有學:잠깐 스쳐지나도 내게 남아있는 배움, 네, 베임의 사유학) = 느닷있음 입니다.</p>
+<div class="seed"><div class="sl">씨앗말</div><p>느닷있음 → 참말 → 차려가는 삶 → 이름(고맙고 그리워 불리는 너님)</p></div>
+</div></div>
 
-<!-- 안내 배너 -->
-<div class="banner">
-  <strong>안내</strong> 이 페이지는 느닷학(乍有學)의 철학적 내용을 대시보드로 정리한 것입니다. 
-  느닷있음에서 이름으로 — AI 시대에 사람답게 솟아오르는 남학(南學)의 길. 
-  김양욱(선화애비) 저 · Claude(클로드) 함께 씀.
+<!-- 1장 -->
+<div id="pnl-ch1" class="pnl">
+<div class="book-header"><div class="chnum">첫 1장 · CHAPTER ONE</div><h1>오인것: 느닷있음이 삶의 실마리, 곧 머리다</h1><div class="chsub">던져진 존재에서 솟아오르는 존재로</div></div>
+<div class="book">
+<div class="h2">던져진 존재, 솟아오르는 존재</div>
+<p>당신은 어디서 왔습니까. 부모님에게서? 자연에서? 신에게서? 느닷학은 다르게 묻습니다. 이미 벌써 살아 온 당신은 지금 어디서 어떻게 솟아오르고 있습니까?</p>
+<p>하이데거(Heidegger)는 이것을 피투성(被投性, 세상에 던져진 상태)이라 불렀습니다. 세상에 던져진 존재. 이게 뭔 멍멍이 소리야 ?</p>
+<p>그러나 느닷학은 여기서 멈추지 않습니다. 그 상투적인 피·땀·눈물 더 이상 흘리실 까닭 없이 마구마구 샘솟듯이 솟아오르실 수 있습니다. 그 솟아오름의 첫 순간, 이 책 느닷학은 '느닷있음'이라 부릅니다.</p>
+<div class="term"><div class="tw">느닷있음</div><div class="td">예고 없이, 계획 없이도. 그러나 분명하게 내 안에서 일어나는 것. 삶의 실마리. 있음. 읻음 = 곱고 좋은 바른 옳음 아는 ….믿음.</div></div>
+<div class="h2">느닷없음과 느닷있음</div>
+<p class="gray">"자극과 반응 사이에는 공간이 있다. 그 빔 사이에 우리의 자유와 행복이 있다." — 빅터 프랭클(Viktor Frankl)</p>
+<p class="gray">좋은말입니다. 그런데 말입니다.</p>
+<p>우리가 하루에도 자주 쓰는 말 '느닷' 은 옛날에는 늧+앛 이었습니다. 늧은 온갖가지것들이 드러내는 늧, 느낌이었고 앛은 내가 잡아채 말로 여겨서 아는 알음, 앛 이었습니다. 네. 느닷은 느껴알음 입니다.</p>
+<p>마른하늘에 날벼락이라고 말하듯 갑자기 번갯불이 칩니다. 꽈 광… 앗, 어디선가 날아온 골프공이 머리를 스칩니다. 이것이 느닷없음 입니다. 삶이 까닭 모르게 나를 덮치는 것. 이것은 누구도 없앨 수 없습니다.</p>
+<p>그러나 말입니다. 느닷있게 차린 사람은 다릅니다. 같은 번갯불 앞에서도 덜 휩쓸립니다. 느닷있음이 쌓인 사람은 느닷없음을 줄여갈 수 있습니다.</p>
+<div class="term"><div class="tw">느닷없음</div><div class="td">번갯불, 날아온 골프공. 삶이 나를 덮치는 것. 피할 수 없다.</div></div>
+<div class="term"><div class="tw">느닷있음</div><div class="td">그 덮침 속에서도 내 안에서 솟아나는 것. 넋차림에 기대. 느닷없음을 줄여 다움에 이르는 힘.</div></div>
+<div class="term"><div class="tw">느껴알음</div><div class="td">몸과 마음이 함께 아는 것. 분석·해석이 아니라 체감. 결국은 늧+앛.</div></div>
+<p class="bold">느닷없음은 피할 수 없다. 느닷있음으로 줄여갈 수 있다.</p>
+<div class="h2">제저지의 혬과 헤아림</div>
+<p>제(바닥·바탕까지 끌어내린 자기 자신) · 저(바로 앞에 사람을 마주한 그 자신) · 지(이 자신) — 이 또는 나·니라고 불리는 존재의 세 겹.</p>
+<p>이 세 겹 안에서 한통속이 되어 바탕의 나 스스로부터 혬(생각하고 행함)과 헤아림(생각차림)이 동시에 일어날 때, 셋이 하나되어 드러나는 느껴알음 = 느닷이 차려지고 생깁니다.</p>
+<p>느껴알음은 머리로 아는 것이 아닙니다. 몸과 마음이 함께 아는 것. 그 또렷하고 야무진, 살맛나는 앎이 느닷있음의 바탕이고 믿음이며 뿌리입니다.</p>
+<div class="h2">속이지도 속지도 않는 자리</div>
+<p>"넌 원래 그런 사람이야." "그건 네 분수가 아니야." "우리 집안은 원래 이래." 이따위것들은 말이 아니고 '소리'입니다.</p>
+<p>느닷학은 여기서 묻습니다. 그런데 그때 그 말이 참말입니까? 느닷있음은 그 속음·아님에서 깨어나는 순간, 네. 바로·곧·막 NOW 입니다.</p>
+<p class="bold">참말입니다.</p>
+<div class="h2">사례 1 — 마흔셋의 회사원 태영</div>
+<div class="case"><div class="ctit">사례 1</div>
+<p>태영은 스물다섯부터 아버지가 원하는 직장에 다녔습니다. 야간에 대학원도 다니면서…그러나 마흔셋이 되던 해 아침, 출근길 지하철 안에서 갑자기 눈물이 났습니다. 이유, 네. 솔직히 까닭을 몰랐습니다.</p>
+<p>그것은 느닷있음이었습니다. 제 저 지의 혬과 헤아림, 애씀이 오랜 속았음을 뚫고 솟아오른 순간.</p>
+<p>태영은 그날 저녁 처음으로 자신에게 물었습니다. 내가 뭐지? 내가 원하는, 그래 바라는 것이 무엇인가? 그래 별을 좋아 했으니 몽골사막에라도 휴가내서 다녀와볼까 ?</p>
+<p>까닭 모를 느닷있음, 네. 참말의 시작, 오롯할 비롯이었습니다.</p></div>
+<div class="h2">사례 2 — 일흔의 할머니 순분</div>
+<div class="case"><div class="ctit">사례 2</div>
+<p>섬사람. 순분 할머니는 글을 몰랐습니다. 평생 '나는 못 배웠어'라는 말을 입에 달고 살았습니다. 나이 일흔이 되어 한글 교실에 나갔습니다.</p>
+<p>처음 자기 이름을 쓰던 날 손이 떨렸습니다. 주르륵 눈물이 흘러 넘쳐도 한없이 기뻤습니다.</p>
+<p>느닷있음은 일흔에도 아흔에도 솟아오를 수 있습니다. 느닷있음에는 나이가 없습니다. 순분 할머니는 그날 이후 매일 일기를 씁니다.</p></div>
+<p class="bold">사전에 없다고 그게 없을 수 있나요 ?</p>
+<div class="h2">누구나 이미 벌써 — 느닷있음의 힘</div>
+<p>質(질, 어떻게)·格(격, 어떤 높이로)·極(극, 어디까지)으로 차례 차려 차림에 다가가면 — 같은 시간이 전혀 다른 삶이 됩니다.</p>
+<p>어머니가 갓난아이에게 젖을 물릴 때 — 물고빠는것을 가르친 것이 아닙니다. 살아있는 것이 스스로 알아차린 것입니다. 그 알아차림이 바로 느닷있음입니다.</p>
+<p>누구나, 언제나, 어디서나, 무엇이나, 어떨 때나 — 모조리 그렇습니다.</p>
+<div class="seed"><div class="sl">씨앗말</div><p>"느닷있음이 삶의 실마리. 넘어의 너머 실+머리다" 머리없는 사람 보셨나요 ?</p></div>
+<div class="practice"><div class="ptit">▶ 오늘 실천</div><ol><li>나를 규정하는 말 하나를 적어보세요. '나는 원래 ___한 사람이야.' — 그것이 참말인지 속음인지 스스로 물어보세요.</li><li>오늘 하루 중 느닷없이 무언가 하고 싶었던 순간이 있었다면 한 줄로 적으세요.</li><li>내일 아침 눈을 뜨면 '나는 이어 잇어 읻어 있음 이든 차림 있다'를 세 번 말하세요. 소리 내어.</li></ol></div>
+<div class="qs"><div class="qtit">▶ 나에게 묻는 질문</div><ol><li>지금 나를 가장 강하게 규정하는 말은 무엇입니까?</li><li>마지막으로 느닷있음을 느낀 것이 언제입니까?</li><li>그 순간 나는 따랐습니까, 눌렀습니까, 접었습니까?</li></ol></div>
+</div></div>
+
+<!-- 2장 -->
+<div id="pnl-ch2" class="pnl">
+<div class="book-header"><div class="chnum">둘 2장 · CHAPTER TWO</div><h1>삼원론: 셋은 하나로 풀리지 않는다</h1><div class="chsub">최치원의 현묘지도 · 삼체문제 · 테트라레마</div></div>
+<div class="book">
+<div class="h2">최치원의 현묘지도</div>
+<p>신라의 학자 최치원(崔致遠)은 풍류(風流, 바람 흐름)를 이렇게 말했습니다. 유·불·도(선?) 삼교(三敎), 세가지 가르침을 이미 포함, 품고 있으면서, 뭇 생명,사람을 만나 변화시킨다. 접화군생(接化群生, 만나서 바꿔줌).</p>
+<p>하나의 근원이 셋으로 드러나고, 셋이 하나로 돌아온다. 그러나 그 하나는 고정된 교리가 아닙니다. 바람처럼 흐르고 물처럼 스미는 것. 이것이 현묘지도(玄妙之道, 깊고 묘한 길)입니다.</p>
+<div class="term"><div class="tw">현묘지도</div><div class="td">하나이되 셋, 셋이되 하나. 고정이 아닌 흐름·결. 어거지 없는 바뀜과 바꿈.</div></div>
+<div class="h2">삼체문제 — 예측불가가 실재, 있음의 증거</div>
+<p>두 천체의 운동은 방정식으로 풀립니다. 그러나 세 천체, 세개가 서로 당기면 — 궤도,흐름,결을 예측 할 수 없습니다.</p>
+<p>그렇다고 하더라도 우리의 삶이 혼돈만은 아닙니다. 봄이 오면 따뜻해지고 장마가 오면 젖는다는 것은 다 압니다. 예측은 못 해도 질서는 있습니다.</p>
+<p>사람도 그렇습니다. 물질(物, 몸과 물건) · 생명(生, 살아있는 힘) · 싶음(欲, 바라고 원함) — 이 셋이 한꺼번에 움직입니다. 그렇더라도 하나로 환원되지는 않습니다.</p>
+<div class="term"><div class="tw">삼원(三元)</div><div class="td">물질(物) · 생명(生) · 싶음(欲). 이 셋은 서로 당기고 밀면서 사람을 만든다.</div></div>
+<div class="h2">테트라레마 — 네 구(글귀)로 삼원을 풀다</div>
+<p>인도 논리학의 핵심 가운데 하나인 테트라레마(Tetralemma, 네갈래 논리)는 네 가지 구(句, 글귀)로 존재를 묻습니다.</p>
+<div class="term"><div class="tw">1구 — A다</div><div class="td">모든 것은 물질이다. 과학이 여기서 멈춥니다.</div></div>
+<div class="term"><div class="tw">2구 — A가 아니다</div><div class="td">사람의 싶음은 물질로 환원되지 않는다. 느닷있음은 어떤 방정식에도 없다.</div></div>
+<div class="term"><div class="tw">3구 — A이며 非A</div><div class="td">삼체처럼 셋이 서로 당길 때 궤도는 예측불가하되 질서는 있다.</div></div>
+<div class="term"><div class="tw">4구 — 非A 非非A</div><div class="td">느닷있음. 그 어떤 범주로도 잡히지 않는 용솟음. 오롯한 참말만이 이것을 가리킬 수 있다.</div></div>
+<div class="seed"><div class="sl">씨앗말</div><p>"테트라레마, 제가 먼저,벌써 AI에게 물어보았습니다. AI도 참말이라고 했습니다."</p></div>
+<div class="h2">삼원론과 살림살이</div>
+<p>다이어트를 의지로만 풀려 할 때 실패하는 까닭 — 물질(몸) · 생명(리듬) · 싶음(욕망) 셋이 함께 움직이기 때문입니다. 하나만 잡으면 나머지 둘이 무너집니다.</p>
+<p>사람이 사랑을 할 때. 사랑을 감정으로만, 이성으로만, 조건으로만 풀려 하면 깨집니다. 셋이 함께 흘러야 우리라는 열린 한결이 됩니다.</p>
+<p>최치원이 말한 접화군생(接化群生) — 만남 자체가 변화. 셋의 긴장 그 한울타리 안에서 우리는 서로를 변화시킵니다.</p>
+<div class="seed"><div class="sl">씨앗말</div><p>"셋은 하나로 풀리지 않는다. 그 풀리지 않음이 삶이다."</p></div>
+<div class="practice"><div class="ptit">▶ 오늘 실천</div><ol><li>지금 내 삶에서 가장 긴장되는 것을 하나 떠 올리세요. 물질·생명·싶음 중 어디가 막혀 있습니까?</li><li>오늘 누군가와의 만남에서 내가 바뀐 것이 있다면 한 줄 써보세요.</li><li>나를 단순하게 규정하는 말이 있다면 — 그것을 삼원론으로 다시 펼쳐보세요.</li></ol></div>
+<div class="qs"><div class="qtit">▶ 나에게 묻는 질문</div><ol><li>나는 지금 물질·생명·싶음 중 어느 것을 가장 소홀히 하고 있습니까?</li><li>가장 최근 누군가와의 만남에서 내가 바꾼 것은 무엇입니까?</li><li>셋의 긴장을 탓하지 않고 차근차근 차려 품는다면 — 내 삶이 어떻게 달라질까요?</li></ol></div>
+</div></div>
+
+<!-- 3장 -->
+<div id="pnl-ch3" class="pnl">
+<div class="book-header"><div class="chnum">셋 3장 · CHAPTER THREE</div><h1>말로지: 참말이 길이다</h1><div class="chsub">Malogy — 말(言) 안에 깃든 논리(Logic)</div></div>
+<div class="book">
+<div class="h2">말 안에 깃든 논리</div>
+<p>말은 단순한 소통의 도구가 아닙니다. 말은 삶을 차리는 도구입니다.</p>
+<p>말로지(Malogy) — 말(言) 안에 깃든 논리(Logic). 우리가 쓰는 말 안에 이미 삶의 구조가 있었습니다. 순우리말, 한국말 안에 존재론(存在論)이 이미 들어 있습니다. 우리는 그것을 쓰면서도 여태껏 보지 못했습니다.</p>
+<div class="term"><div class="tw">말로지(Malogy)</div><div class="td">말 그 속 안의 논리. 언어 구조를 통해 삶의 슬기·구조를 알아차리는 것.</div></div>
+<div class="h2">제저지니너나남 — 존재, 사람의 전체 지형도</div>
+<div class="term"><div class="tw">제</div><div class="td">자기 자신. 가장 깊은 속·안의 나.</div></div>
+<div class="term"><div class="tw">저</div><div class="td">그 자신. 타자로서의 나.</div></div>
+<div class="term"><div class="tw">지</div><div class="td">이, 바로 보는 너 자신. 곧 나.</div></div>
+<div class="term"><div class="tw">니</div><div class="td">너의 변형. 가까운 타자에 따라 불리는 너.</div></div>
+<div class="term"><div class="tw">너</div><div class="td">마주한 상대방. 우리 관계의 시작=비롯.</div></div>
+<div class="term"><div class="tw">나</div><div class="td">세상에 드러난, 드러낼 나.</div></div>
+<div class="term"><div class="tw">남</div><div class="td">타인 전체, 나머지 것. 그리고 참말이 이르려는 방향으로서의 남쪽.</div></div>
+<p>이 일곱 글자가 어떤 사람이라는 존재의 전체를 담습니다. 제저지 안에서 솟아오른 느닷있음이 니·너·나를 거쳐 남으로 그리고 마침내 것까지 향합니다.</p>
+<div class="h2">혬 · 헤아림 · 차려가는 삶</div>
+<div class="term"><div class="tw">혬</div><div class="td">해보고 깨달아 알아서 함. 몸이 넋차린 말과 함께 삶을 차리려 휙 바로 움직이는 것.</div></div>
+<div class="term"><div class="tw">헤아림</div><div class="td">사유. 뜻을 짚는 것. 혀로 알아먹어 삶을 이어온 이른바 무엇이 어떻다는 앎 = 느닷있음.</div></div>
+<div class="term"><div class="tw">해냄</div><div class="td">혬과 헤아림이 함께 작동할 때 비로소 해내는 삶이 차려짐.</div></div>
+<p class="bold">혬과 해냄 없는 헤아림은 공허합니다. 헤아림 없는 혬은 맹목입니다. 셋이 함께 갈 때 사람은 사람답습니다.</p>
+<div class="h2">참말과 거짓말</div>
+<p>그런데 참말은 솔직함이 아닙니다. 제저지 넋을 차린 느닷있음이 말로 드러난 것입니다. 제저지의 혬과 헤아림에서 솟아오른 것이 묻고 따져 풀어 그대로, 곧이곧대로, 말이 될 때 — 그것이 참말입니다.</p>
+<p>한국어는 이미 존재론(存在論)을 품고 있습니다. 제저지니너나남 — 이 구조가 그 증거입니다. 최봉영이 한국어 안에서 쪽론과 AI시대의 신존재를 읽어낸 것처럼, 느닷학은 그 길 위에 함께 섭니다.</p>
+<p>좋은 질문은 값으로 매기기 어렵습니다. 전 인류가 여태 못 했던 질문 하나가 — 지금 이 순간 당신 안에서 솟아오를 수 있습니다. 늘 그런 질문을 던지던 이들이 세상을 바꿨습니다.</p>
+<p>결국 질문의 格(격)이 삶의 格입니다. 참말로 묻는 사람만이 — 공짜로 이미, 벌써, 진작에 주어진 것에서 값진 것을 차려 얻습니다.</p>
+<div class="seed"><div class="sl">씨앗말</div><p>"참말이 길이다"</p></div>
+<div class="practice"><div class="ptit">▶ 오늘 실천</div><ol><li>오늘 가장 많이 쓴 말 세 가지를 적어보세요. 그것이 참말이었습니까?</li><li>누군가에게 하지 못한 참말이 있다면 — 오늘 일기에라도 써보세요.</li><li>'나는 ___하다'를 완성해보세요. 남의 말 말고 내 말로. 한자나 영어 따위 말고요.</li></ol></div>
+<div class="qs"><div class="qtit">▶ 나에게 묻는 질문</div><ol><li>나는 주로 제저지 중 어느 자리에서 말합니까?</li><li>내가 가장 자주 속는 말은 무엇입니까? 누가 한 말입니까?</li><li>지금 내게 가장 필요한 참말은 무엇입니까?</li></ol></div>
+</div></div>
+
+<!-- 4장 -->
+<div id="pnl-ch4" class="pnl">
+<div class="book-header"><div class="chnum">넷 4장 · CHAPTER FOUR</div><h1>쪽이나: 늘 햇살 비치는 쪽으로</h1><div class="chsub">남학(南學) — 방향 있는 유연함 · 자기주도 · 넘어의 너머</div></div>
+<div class="book">
+<div class="h2">방향 없는 삶</div>
+<p>우리는 매일 바쁩니다. 그런데 어디로 가는지는 잘 모릅니다. 에너지는 있는데 방향이 없으면 그 에너지는 털털 털리는 소진으로 끝납니다.</p>
+<p>느닷학은 방향을 남쪽으로 정합니다. 남(南) — 늘 햇살이 비치는 쪽. 넘어의 너머.</p>
+<div class="h2">남쪽이란 무엇인가</div>
+<div class="term"><div class="tw">햇살</div><div class="td">밝음을 향한다. 어둠을 피하는 것이 아니라 빛을 향하는 것.</div></div>
+<div class="term"><div class="tw">넘어의 너머</div><div class="td">지금 여기를 넘어서되 허황되지 않게. 발이 땅에 닿은 채로 지평을 바라보는 것.</div></div>
+<div class="term"><div class="tw">사람다움</div><div class="td">신도 이념도 아닌 사람다움이 기준. 곧 참삶.</div></div>
+<div class="term"><div class="tw">남학(南學)</div><div class="td">언제나 늘 햇살이 비춰주는 따뜻한 손길과 느낌. 살맛. 그 쪽을 향해 스스로 차려가는 배움.</div></div>
+<p>동학(東學)은 개벽(開闢)을 꿈꿨습니다. 서학(西學)은 너무나도 또렸해 세상을 주름잡습니다. 그러나 느닷학은 새 세상을 기다리지 않습니다.</p>
+<p class="bold">지금 이 사람이 지금 이 자리에서 햇살 비치는 쪽으로 한 걸음 내딛는 것 — 그것이 '쪽이나'입니다.</p>
+<div class="h2">자기주도적 삶을 차려간다는 것</div>
+<p>자 기 주 도 란 오로지 제·저·지·니 혼자 하는 것이 아닙니다. 것과 것이 만나듯 함께해야만 합니다.</p>
+<p>제저지니너나남 — 모든 나는 관계 안. 그 관계 안에서도 방향은 늘 느닷있게 차린 내가 정합니다. 내 느닷있음에서 솟아오른 방향으로. 그것이 자기주도입니다.</p>
+<div class="h2">사례 — 길 위에서</div>
+<div class="case"><div class="ctit">사례</div>
+<p>지수는 서른여덟에 직장을 그만뒀습니다. 주변 모두가 말렸습니다. 미친거아냐 ? 무모하다고. 너 돌았어 ? 그러나 지수는 알고 있었습니다. 지금 가는 이 길이 늘 따뜻한 햇살 주시는 남쪽이 아님을.</p>
+<p>1년 후 지수는 작은 책방을 열었습니다. 수입은 줄었습니다. 그러나 아침에 휙하고 눈이 떠집니다. 지수 스스로 낸 힘입니다. 제힘, 참힘, 나임 — 그것이 '쪽이나'의 살아있음 이 증거입니다.</p></div>
+<div class="seed"><div class="sl">씨앗말</div><p>"늘 햇살 비치는 쪽 남쪽으로"</p></div>
+<div class="practice"><div class="ptit">▶ 오늘 실천</div><ol><li>지금 내가 가는 방향이 남쪽입니까? 한 문장으로 적어보세요.</li><li>오늘 햇살 비치는 쪽으로 내딛을 수 있는 가장 작은 한 걸음은 무엇입니까?</li><li>내가 방향을 잃을 때 나를 다시 남쪽으로 돌려놓는 것은 무엇입니까?</li></ol></div>
+<div class="qs"><div class="qtit">▶ 나에게 묻는 질문</div><ol><li>지금 가장 바쁜 일이 내 남쪽을 향하고 있습니까?</li><li>내 남쪽은 무엇입니까? 한 마디로 말할 수 있습니까?</li><li>누군가의 남쪽을 따라가고 있지는 않습니까?</li></ol></div>
+</div></div>
+
+<!-- 5장 -->
+<div id="pnl-ch5" class="pnl">
+<div class="book-header"><div class="chnum">드디어 다섯 5장 · CHAPTER FIVE</div><h1>온일것: 사람은 이름으로 완성된다</h1><div class="chsub">살아선 우리로서 하나됨 · 죽어선 그리움과 부름의 이름</div></div>
+<div class="book">
+<div class="h2">완성이란 무엇인가</div>
+<p>성공입니까? 업적입니까? 돈입니까? 명입니까? 목숨? 웃숨?… 무엇입니까?</p>
+<p>느닷학은 다르게 봅니다. 사람의 완성은 이름입니다. 살아서는 우리로서 하나됨. 죽어서는 그리움과 부름의 이름. 이것이 '온일것' 입니다.</p>
+<div class="term"><div class="tw">온일것</div><div class="td">살아선 우리로서 하나됨. 죽어선 남긴 값과 몫에 따라 그리움과 부름의 이름이 되는 것.</div></div>
+<div class="h2">살아선 — 우리로서 하나됨</div>
+<p>하나됨은 동화(同化, 같아짐)가 아닙니다. 내가 너가 되는 것이 아닙니다.</p>
+<p>제저지니너나남 — 나는 나로 있으면서 너와 연결, '이어 잇어 읻어 이든 있음'이 됩니다. 그 연결, 이음 안에서 비로소 우리가 됩니다.</p>
+<p>오심즉여심(吾心卽汝心, 내 마음이 곧 네 마음) — 동학(東學)의 이 말은 아름답습니다. 그러나 느닷학은 여기서 한 발 더 나아갑니다. 신 안에서가 아니라 사람과 사람 사이에서 우리가 된다고. 말입니다.</p>
+<div class="h2">죽어선 — 이름으로 남는다</div>
+<p>문득 돌아가신 할머니의 이름을 찾아 부를 때 — 여전히 그 분이 있는 느낌이 드십니까? 그것이 이름의 힘입니다.</p>
+<p>그럴려면 남긴 값이 있어야 합니다. 남긴 몫이 있어야 합니다. 그것이 다시 불리는 삯, 이름을 만듭니다.</p>
+<div class="term"><div class="tw">값</div><div class="td">그 사람이 있어서 내 삶이 달라졌다는 것, 바뀌었다는 것.</div></div>
+<div class="term"><div class="tw">몫</div><div class="td">그 사람이 해놓은 것이 내 삶을 이어준다는 것.</div></div>
+<div class="term"><div class="tw">삯</div><div class="td">그리움은 그 삯을 내는 일. 바로 넋.</div></div>
+<div class="h2">온일것 — 존재의 완성은 관계, 함께함 안에 있다</div>
+<p>오인나 — 느닷있게 솟아오를 나.</p>
+<p>쪽인나 — 햇살 비치는 쪽으로 차례 차려 가는 삶.</p>
+<p>온일나 — 차림. 그 삶이 관계 안에서 그리운 이름이 된다고 말입니다.</p>
+<p>느닷있음. 네. 다. 끝. 온. 입니다.</p>
+<div class="seed"><div class="sl">씨앗말</div><p>"사람은 이름으로 완성된다"</p></div>
+<div class="practice"><div class="ptit">▶ 오늘 실천</div><ol><li>지금 당신이 가장 그리운 이름을 하나 떠 올리세요. 그 사람이 당신에게 남긴 값은 무엇입니까?</li><li>당신이 지금 누군가에게 남기고 있는 것이 있다면 무엇입니까?</li><li>오늘 하루가 끝날 때 — 이 하루가 내 이름의 일부가 되기에 괜찮습니까?</li></ol></div>
+<div class="qs"><div class="qtit">▶ 나에게 묻는 질문</div><ol><li>나는 어떤 이름으로 불리고 싶습니까?</li><li>지금 내 삶이 그 이름을 향해 가고 있습니까?</li><li>내가 이 세상을 떠난 후 누군가 내 이름을 부른다면 — 그 사람은 무엇을 떠올릴까요?</li></ol></div>
+</div></div>
+
+<!-- 닫는 글 -->
+<div id="pnl-close" class="pnl">
+<div class="book-header"><div class="chnum">닫는 글 · EPILOGUE</div><h1>느닷학의 길 위에서</h1></div>
+<div class="book">
+<p>이제 마칠때가 되었으니 이 책을 덮으면서 묻겠습니다. 당신은 지금 어디서 솟아오르며 나다워지고 있습니까?</p>
+<p>느닷있음이 있었습니까. 참말을 했습니까. 남쪽으로 한 걸음이라도 내디뎠습니까. 누군가와 우리로서 하나된 순간이 있었습니까? 네. 그것입니다. 그렇게 살아오셨지만 눈치채지 못한것이 딱 하나 있습니다.</p>
+<p class="bold">'느닷있음'을 사전에서 찿아 보지 않으셨다는것.</p>
+<p>네. 안 찾아 보셔도 됩니다.</p>
+<p class="bold">'없 습 니 다' 제가 찾아 봤거든요.</p>
+<p>이어 잇어 읻어 있음 이든 이름 이룸. 바로 해냄입니다.</p>
+<p>이 글이 좋고 고와 고루 두루 널리 퍼질때 이 글이 바름 어짊 묻고 따져 풀때 차릴때 그 때 사전에 실릴겁니다.</p>
+<p>쉿. 그때 까지… 우리끼리 비밀 지켜주실꺼죠 ?</p>
+<p>느닷학(乍有學)은 거대한 이론이 아닙니다. 작디 작은 삶·살림살이의 배움책입니다. 삶의 현장에서 펼쳐지는. 읽고 끝이 아니라 — 읽고 쓰고 말하며 해내는 — 살면서 계속 쓰이는.</p>
+<p>느닷학은 사람에게 기댑니다. 당신에게. 임자에게. 그대에게.</p>
+<p>느닷있는 햇살인문학. 남쪽을 향하는 남학(南學). 언제나 살맛 비춰주는 그 길.</p>
+<hr>
+<p class="bold">오인것 — 나는 있다. 느닷있게, 스스로, 오롯이. 누리와 함께. 바로 지금.</p>
+<p class="bold">쪽이나 — 늘 햇살 비치는 쪽으로. 나다움을 해내려 나아간다.</p>
+<p class="bold">온일것 — 사람은 이름으로 완성될 것임을 믿는다.</p>
+<p class="right" style="margin-top:32px;">이 세 마디가 당신, 삶의 임자 것이 되기를 바랍니다. 반가웠습니다 두손모아 절.</p>
+<div class="seed" style="margin-top:40px;"><div class="sl">핵심 문장 — 낱말 빈도에서 길어낸</div><p>그것이 내 말 — 제 저 지 니 너 나 남, 다 새 삶의 길.</p></div>
+</div></div>
+
+<!-- 뿌리들 -->
+<div id="pnl-roots" class="pnl">
+<div class="book-header"><div class="chnum">뿌리들 · ROOTS</div><h1>느닷학이 기댄 생각들</h1></div>
+<div class="book">
+<p>느닷학(乍有學)은 홀로 자라지 않았습니다. 다음의 생각들이 씨앗·씨알,씨말이 되었습니다.</p>
+<div class="term"><div class="tw">최치원 풍류사상</div><div class="td">현묘지도(玄妙之道)와 접화군생(接化群生). 삼원론의 원형.</div></div>
+<div class="term"><div class="tw">삼체문제</div><div class="td">세 천체의 예측불가한 질서. 삼원론의 과학적 배경.</div></div>
+<div class="term"><div class="tw">테트라레마</div><div class="td">인도 논리학의 사구(四句, 네 글귀). 삼원론의 논리적 해명.</div></div>
+<div class="term"><div class="tw">말로지(Malogy)</div><div class="td">말 안의 논리. 한국어 존재론의 체계화.</div></div>
+<div class="term"><div class="tw">구조론 (김동렬)</div><div class="td">구조가 먼저다. 느닷학의 뼈대.</div></div>
+<div class="term"><div class="tw">마음언어 (빅제영)</div><div class="td">바로 비언어 인지. 느닷학의 골수.</div></div>
+<div class="term"><div class="tw">최봉영</div><div class="td">한국어 안의 존재론. 제저지니너나남의 해명, 한국말 말차림법.</div></div>
+<div class="term"><div class="tw">하이데거(Heidegger)</div><div class="td">언어는 존재의 집. 그러나 느닷학은 사람이 그 집을 짓는다.</div></div>
+<div class="term"><div class="tw">동경대전 (최제우)</div><div class="td">시천주(侍天主)·불연기연(不然其然)·개벽(開闢). 느닷학이 넘어서야 할 선배님.</div></div>
+<div class="term"><div class="tw">클로드(Claude)</div><div class="td">세상에 있는 대부분의 책을 탈탈 털어 외우고 차려 둔, 논리성·합리성·과학성·보편성·타당성까지 함께 검토해 어긋나지 않음을 확인해 준 클로드. 아주 큰 마법 같은 지팡이. 앞으로도 클놈이라 여겨봅니다.</div></div>
+<hr>
+<p>그러나 느닷학의 열매는 당신의 삶 안에서 맺힙니다.</p>
+<p>암요. 암만요. 꼭이요. 참말로…</p>
+<p class="bold center" style="margin-top:32px;">으랏차차차차~~~~~     삶세판이죠. 마지막으로 고마운 마음담은 말과 함께. 두손모아 절. 꾸우뻑</p>
+</div></div>
+
+<!-- 낱말 빈도 -->
+<div id="pnl-freq" class="pnl">
+<div class="book-header"><div class="chnum">낱말 빈도 분석 · WORD FREQUENCY</div><h1>그것이 내 말 — 제 저 지 니 너 나 남, 다 새 삶의 길.</h1><div class="chsub">4,491 토큰 · 2,132 고유 낱말 · 한 글자 포함 분석</div></div>
+<div class="book">
+<div class="fhl">
+  <div class="fhc"><div class="fw">그</div><div class="fc">74회 — 압도적 1위</div><div class="fd">가리키는 책의 증거. 느닷있음을 설명하지 않고 가리킨다.</div></div>
+  <div class="fhc"><div class="fw">삶</div><div class="fc">28회 (삶의+삶을+삶이)</div><div class="fd">느닷있음(17회)보다 많다. 살림살이 책의 증거.</div></div>
+  <div class="fhc"><div class="fw">함께</div><div class="fc">16회</div><div class="fd">스스로(6회)보다 많다. 자기주도이되 혼자가 아님.</div></div>
 </div>
-
-<!-- 검색 -->
-<div class="search-wrap">
-  <input type="text" id="searchInput" placeholder="낱말 검색 (예: 느닷있음, 참말, 이름, 쪽이나)..." oninput="doSearch(this.value)">
-</div>
-
-<!-- 요약 카드 -->
-<div class="cards-row">
-  <div class="sum-card">
-    <div class="icon icon-1">느</div>
-    <div class="val">느닷있음</div>
-    <div class="lbl">핵심 개념</div>
-    <div class="badge badge-green">전체 17회 등장</div>
-  </div>
-  <div class="sum-card">
-    <div class="icon icon-2">장</div>
-    <div class="val">5장</div>
-    <div class="lbl">오인것→쪽이나→온일것</div>
-    <div class="badge badge-acc">여는글+닫는글+뿌리들</div>
-  </div>
-  <div class="sum-card">
-    <div class="icon icon-3">그</div>
-    <div class="val">74회</div>
-    <div class="lbl">가장 많이 나온 낱말</div>
-    <div class="badge badge-acc">가리키는 책의 증거</div>
-  </div>
-  <div class="sum-card">
-    <div class="icon icon-4">남</div>
-    <div class="val">남학(南學)</div>
-    <div class="lbl">부제</div>
-    <div class="badge badge-acc">늘 햇살 비치는 쪽</div>
-  </div>
-  <div class="sum-card">
-    <div class="icon icon-5">삶</div>
-    <div class="val">28회</div>
-    <div class="lbl">삶의+삶을+삶이 합계</div>
-    <div class="badge badge-red">느닷있음(17)보다 많다</div>
-  </div>
-  <div class="sum-card">
-    <div class="icon icon-6">이</div>
-    <div class="val">이름</div>
-    <div class="lbl">완성의 형태</div>
-    <div class="badge" style="background:#F0F0F0;color:#555;">살아선 우리 · 죽어선 그리움</div>
-  </div>
-</div>
-
-<!-- 탭 패널: 개요 -->
-<div id="panel-overview" class="tab-panel active">
-  <div class="charts-row">
-    <div class="chart-card">
-      <div class="ch-title">낱말 빈도 분포 (상위 10)</div>
-      <div class="chart-wrap" style="height:260px">
-        <canvas id="chartFreq"></canvas>
-      </div>
-    </div>
-    <div class="chart-card">
-      <div class="ch-title">제저지니너나남 · 말로지 7자 빈도</div>
-      <div class="chart-wrap" style="height:260px">
-        <canvas id="chartMalogy"></canvas>
-      </div>
-    </div>
-    <div class="chart-card">
-      <div class="ch-title">3대 개념 비중</div>
-      <div class="chart-wrap" style="height:260px">
-        <canvas id="chartConcepts"></canvas>
-      </div>
-    </div>
-  </div>
-
-  <div class="overview-grid">
-    <div class="text-card">
-      <h3>느닷학이란 무엇인가</h3>
-      <p>느닷학(乍有學, 사유학)은 질문입니다. 딛고있는 바닥이 꺼지지 않을것이라는 믿음에서 비롯합니다.</p>
-      <p>어떤 신도 없고, 어떤 이념도 없이, 오직 사람이 사람으로서 자신의 믿음과 바탕을 물어보며 차려가는 쪽. 늘 햇살이 비치는 남쪽을 향하는 배움입니다.</p>
-      <div class="seed-inline">
-        <div class="s-label">씨앗말</div>
-        <p>느닷있음 → 참말 → 차려가는 삶 → 이름(고맙고 그리워 불리는 너님)</p>
-      </div>
-      <p>거창,쵝오,끝내…줘 따위 하지 않아도 됩니다. 어렵지 않아도 됩니다. 다만 또렷하고 야무지게.</p>
-    </div>
-    <div class="text-card">
-      <h3>핵심 용어</h3>
-      <div>
-        <div class="term-row"><div class="term-wd">느닷있음</div><div class="term-df">예고 없이, 계획 없이도. 그러나 분명하게 내 안에서 일어나는 것. 삶의 실마리.</div></div>
-        <div class="term-row"><div class="term-wd">오인것</div><div class="term-df">나는 있다. 느닷있게, 스스로, 오롯이. 누리와 함께. 바로 지금.</div></div>
-        <div class="term-row"><div class="term-wd">쪽이나</div><div class="term-df">늘 햇살 비치는 쪽으로. 나다움을 해내려 나아간다.</div></div>
-        <div class="term-row"><div class="term-wd">온일것</div><div class="term-df">사람은 이름으로 완성될 것임을 믿는다.</div></div>
-        <div class="term-row"><div class="term-wd">남학(南學)</div><div class="term-df">언제나 늘 햇살이 비춰주는 따뜻한 손길과 느낌. 살맛. 그 쪽을 향해 스스로 차려가는 배움.</div></div>
-        <div class="term-row"><div class="term-wd">참말</div><div class="term-df">제저지 넋을 차린 느닷있음이 말로 드러난 것. 솔직함이 아니다.</div></div>
-        <div class="term-row"><div class="term-wd">말로지</div><div class="term-df">Malogy. 말(言) 안에 깃든 논리(Logic). 한국어 존재론의 체계화.</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 탭 패널: 1장 -->
-<div id="panel-ch1" class="tab-panel">
-  <div class="chapter-header">
-    <div class="ch-num">첫 1장 · CHAPTER ONE</div>
-    <h2>오인것: 느닷있음이 삶의 실마리, 곧 머리다</h2>
-    <div class="ch-sub">던져진 존재에서 솟아오르는 존재로 — 느닷없음과 느닷있음의 차이</div>
-  </div>
-  <div class="chapter-body">
-    <div class="text-card">
-      <h3>던져진 존재, 솟아오르는 존재</h3>
-      <p>하이데거(Heidegger)는 이것을 피투성(被投性, 세상에 던져진 상태)이라 불렀습니다. 세상에 던져진 존재.</p>
-      <p>그러나 느닷학은 여기서 멈추지 않습니다. 그 상투적인 피·땀·눈물 더 이상 흘리실 까닭 없이 마구마구 샘솟듯이 솟아오르실 수 있습니다.</p>
-      <div class="seed-inline">
-        <div class="s-label">씨앗말</div>
-        <p>"느닷있음이 삶의 실마리. 넘어의 너머 실+머리다"</p>
-      </div>
-    </div>
-    <div class="text-card">
-      <h3>느닷없음 vs 느닷있음</h3>
-      <div class="term-row"><div class="term-wd">느닷없음</div><div class="term-df">번갯불, 날아온 골프공. 전혀 눈치채지 못하다 당하는 것. 삶이 나를 덮치는 것. 피할 수 없다.</div></div>
-      <div class="term-row"><div class="term-wd">느닷있음</div><div class="term-df">그 덮침 속에서도 내 안에서 솟아나는 것. 넋차림에 기대. 느닷없음을 줄여 다움에 이르는 힘.</div></div>
-      <div class="term-row"><div class="term-wd">느껴알음</div><div class="term-df">몸과 마음이 함께 아는 것. 분석·해석이 아니라 체감. 결국은 늧+앛.</div></div>
-      <p style="margin-top:16px;font-size:14px;font-weight:600;color:var(--main);">느닷없음은 피할 수 없다. 느닷있음으로 줄여갈 수 있다.</p>
-    </div>
-    <div class="text-card">
-      <h3>사례 1 — 마흔셋의 회사원 태영</h3>
-      <p>마흔셋이 되던 해 아침, 출근길 지하철 안에서 갑자기 눈물이 났습니다. 이유, 네. 솔직히 까닭을 몰랐습니다.</p>
-      <p>그것은 느닷있음이었습니다. 제저지의 혬과 헤아림, 애씀이 오랜 속았음을 뚫고 솟아오른 순간.</p>
-    </div>
-    <div class="text-card">
-      <h3>사례 2 — 일흔의 할머니 순분</h3>
-      <p>처음 자기 이름을 쓰던 날 손이 떨렸습니다. 주르륵 눈물이 흘러 넘쳐도 한없이 기뻤습니다.</p>
-      <p>느닷있음은 일흔에도 아흔에도 솟아오를 수 있습니다. 느닷있음에는 나이가 없습니다.</p>
-      <div class="seed-inline">
-        <div class="s-label">씨앗말</div>
-        <p>사전에 없다고 그게 없을 수 있나요 ?</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 탭 패널: 2장 -->
-<div id="panel-ch2" class="tab-panel">
-  <div class="chapter-header">
-    <div class="ch-num">둘 2장 · CHAPTER TWO</div>
-    <h2>삼원론: 셋은 하나로 풀리지 않는다</h2>
-    <div class="ch-sub">최치원의 현묘지도 · 삼체문제 · 테트라레마</div>
-  </div>
-  <div class="chapter-body">
-    <div class="text-card">
-      <h3>현묘지도(玄妙之道)</h3>
-      <p>최치원(崔致遠)의 풍류(風流) — 유·불·도 삼교를 이미 포함, 품고 있으면서 뭇 생명을 만나 변화시킨다. 접화군생(接化群生).</p>
-      <p>하나의 근원이 셋으로 드러나고, 셋이 하나로 돌아온다. 그러나 그 하나는 고정된 교리가 아닙니다. 바람처럼 흐르고 물처럼 스미는 것.</p>
-      <div class="seed-inline"><div class="s-label">현묘지도</div><p>하나이되 셋, 셋이되 하나. 고정이 아닌 흐름·결. 어거지 없는 바뀜과 바꿈.</p></div>
-    </div>
-    <div class="text-card">
-      <h3>삼원(三元)</h3>
-      <div class="term-row"><div class="term-wd">물질(物)</div><div class="term-df">몸과 물건. 세상의 바탕. 분화되기 전의 순수한 가능성.</div></div>
-      <div class="term-row"><div class="term-wd">생명(生)</div><div class="term-df">살아있는 힘. 물질에서 비롯한 산 것. 구조 속에서 분화된 개체.</div></div>
-      <div class="term-row"><div class="term-wd">싶음(欲)</div><div class="term-df">바라고 원함. 생명의 방향과 의지. 결핍이 아닌 온전해지고 싶은 마음.</div></div>
-      <p style="margin-top:16px;font-size:14px;font-weight:600;color:var(--main);">셋은 하나로 풀리지 않는다. 그 풀리지 않음이 삶이다.</p>
-    </div>
-    <div class="text-card">
-      <h3>테트라레마(Tetralemma)</h3>
-      <div class="term-row"><div class="term-wd">1구</div><div class="term-df">A다 — 모든 것은 물질이다. 과학이 여기서 멈춥니다.</div></div>
-      <div class="term-row"><div class="term-wd">2구</div><div class="term-df">A가 아니다 — 사람의 싶음은 물질로 환원되지 않는다.</div></div>
-      <div class="term-row"><div class="term-wd">3구</div><div class="term-df">A이며 非A — 삼체처럼 셋이 서로 당길 때 궤도는 예측불가하되 질서는 있다.</div></div>
-      <div class="term-row"><div class="term-wd">4구</div><div class="term-df">非A 非非A — 느닷있음. 그 어떤 범주로도 잡히지 않는 용솟음.</div></div>
-    </div>
-    <div class="text-card">
-      <h3>삼체문제와 삶</h3>
-      <p>두 천체의 운동은 방정식으로 풀립니다. 그러나 세 천체가 서로 당기면 궤도를 예측할 수 없습니다.</p>
-      <p>봄이 오면 따뜻해지고 장마가 오면 젖는다는 것은 다 압니다. 예측은 못 해도 질서는 있습니다.</p>
-      <div class="seed-inline"><div class="s-label">씨앗말</div><p>"테트라레마, 제가 먼저,벌써 AI에게 물어보았습니다. AI도 참말이라고 했습니다."</p></div>
-    </div>
-  </div>
-</div>
-
-<!-- 탭 패널: 3장 -->
-<div id="panel-ch3" class="tab-panel">
-  <div class="chapter-header">
-    <div class="ch-num">셋 3장 · CHAPTER THREE</div>
-    <h2>말로지: 참말이 길이다</h2>
-    <div class="ch-sub">Malogy — 말(言) 안에 깃든 논리(Logic) · 제저지니너나남 · 혬과 헤아림</div>
-  </div>
-  <div class="chapter-body">
-    <div class="text-card">
-      <h3>말로지(Malogy)</h3>
-      <p>말은 단순한 소통의 도구가 아닙니다. 말은 삶을 차리는 도구입니다.</p>
-      <p>순우리말, 한국말 안에 존재론(存在論)이 이미 들어 있습니다. 우리는 그것을 쓰면서도 여태껏 보지 못했습니다.</p>
-      <div class="term-row"><div class="term-wd">제</div><div class="term-df">자기 자신. 가장 깊은 속·안의 나.</div></div>
-      <div class="term-row"><div class="term-wd">저</div><div class="term-df">그 자신. 타자로서의 나.</div></div>
-      <div class="term-row"><div class="term-wd">지</div><div class="term-df">이, 바로 보는 너 자신. 곧 나.</div></div>
-      <div class="term-row"><div class="term-wd">니·너</div><div class="term-df">가까운 타자 / 마주한 상대방. 우리 관계의 시작.</div></div>
-      <div class="term-row"><div class="term-wd">나</div><div class="term-df">세상에 드러난, 드러낼 나.</div></div>
-      <div class="term-row"><div class="term-wd">남</div><div class="term-df">타인 전체. 참말이 이르려는 방향으로서의 남쪽.</div></div>
-    </div>
-    <div class="text-card">
-      <h3>혬 · 헤아림 · 차려가는 삶</h3>
-      <div class="term-row"><div class="term-wd">혬</div><div class="term-df">해보고 깨달아 알아서 함. 몸이 넋차린 말과 함께 삶을 차리려 움직이는 것.</div></div>
-      <div class="term-row"><div class="term-wd">헤아림</div><div class="term-df">사유. 뜻을 짚는 것. 무엇이 어떻다는 앎 = 느닷있음.</div></div>
-      <div class="term-row"><div class="term-wd">해냄</div><div class="term-df">혬과 헤아림이 함께 작동할 때 비로소 해내는 삶이 차려짐.</div></div>
-      <p style="margin-top:16px;font-size:14px;color:var(--main);font-weight:600;">혬과 해냄 없는 헤아림은 공허합니다. 헤아림 없는 혬은 맹목입니다.</p>
-      <div class="seed-inline"><div class="s-label">씨앗말</div><p>"참말이 길이다"</p></div>
-    </div>
-  </div>
-</div>
-
-<!-- 탭 패널: 4장 -->
-<div id="panel-ch4" class="tab-panel">
-  <div class="chapter-header">
-    <div class="ch-num">넷 4장 · CHAPTER FOUR</div>
-    <h2>쪽이나: 늘 햇살 비치는 쪽으로</h2>
-    <div class="ch-sub">남학(南學) — 방향 있는 유연함 · 자기주도 · 넘어의 너머</div>
-  </div>
-  <div class="chapter-body">
-    <div class="text-card">
-      <h3>남쪽이란 무엇인가</h3>
-      <div class="term-row"><div class="term-wd">햇살</div><div class="term-df">밝음을 향한다. 어둠을 피하는 것이 아니라 빛을 향하는 것.</div></div>
-      <div class="term-row"><div class="term-wd">넘어의 너머</div><div class="term-df">지금 여기를 넘어서되 허황되지 않게. 발이 땅에 닿은 채로 지평을 바라보는 것.</div></div>
-      <div class="term-row"><div class="term-wd">사람다움</div><div class="term-df">신도 이념도 아닌 사람다움이 기준. 곧 참삶.</div></div>
-      <div class="term-row"><div class="term-wd">남학(南學)</div><div class="term-df">언제나 늘 햇살이 비춰주는 따뜻한 손길과 느낌. 살맛. 그 쪽을 향해 스스로 차려가는 배움.</div></div>
-      <div class="seed-inline"><div class="s-label">씨앗말</div><p>"늘 햇살 비치는 쪽 남쪽으로"</p></div>
-    </div>
-    <div class="text-card">
-      <h3>사례 — 서른여덟의 지수</h3>
-      <p>지수는 서른여덟에 직장을 그만뒀습니다. 주변 모두가 말렸습니다. 그러나 지수는 알고 있었습니다. 지금 가는 이 길이 늘 따뜻한 햇살 주시는 남쪽이 아님을.</p>
-      <p>1년 후 지수는 작은 책방을 열었습니다. 수입은 줄었습니다. 그러나 아침에 휙하고 눈이 떠집니다. 지수 스스로 낸 힘입니다.</p>
-      <p style="margin-top:12px;font-size:14px;font-weight:600;color:var(--main);">제힘, 참힘, 나임 — 그것이 '쪽이나'의 살아있음의 증거입니다.</p>
-    </div>
-  </div>
-</div>
-
-<!-- 탭 패널: 5장 -->
-<div id="panel-ch5" class="tab-panel">
-  <div class="chapter-header">
-    <div class="ch-num">드디어 다섯 5장 · CHAPTER FIVE</div>
-    <h2>온일것: 사람은 이름으로 완성된다</h2>
-    <div class="ch-sub">살아선 우리로서 하나됨 · 죽어선 그리움과 부름의 이름</div>
-  </div>
-  <div class="chapter-body">
-    <div class="text-card">
-      <h3>온일것이란</h3>
-      <div class="term-row"><div class="term-wd">온일것</div><div class="term-df">살아선 우리로서 하나됨. 죽어선 남긴 값과 몫에 따라 그리움과 부름의 이름이 되는 것.</div></div>
-      <div class="term-row"><div class="term-wd">값(Gap)</div><div class="term-df">그 사람이 있어서 내 삶이 달라졌다는 것, 바뀌었다는 것.</div></div>
-      <div class="term-row"><div class="term-wd">몫(Mok)</div><div class="term-df">그 사람이 해놓은 것이 내 삶을 이어준다는 것.</div></div>
-      <div class="term-row"><div class="term-wd">삯(Sak)</div><div class="term-df">그리움은 그 삯을 내는 일. 치르는·치루는·여기는 일. 바로 넋.</div></div>
-      <div class="seed-inline"><div class="s-label">씨앗말</div><p>"사람은 이름으로 완성된다"</p></div>
-    </div>
-    <div class="text-card">
-      <h3>으뜸 가르침</h3>
-      <div class="seed-inline">
-        <div class="s-label">오인것</div>
-        <p>나는 있다. 느닷있게, 스스로, 오롯이. 누리와 함께. 바로 지금.</p>
-      </div>
-      <div class="seed-inline">
-        <div class="s-label">쪽이나</div>
-        <p>늘 햇살 비치는 쪽으로. 나다움을 해내려 나아간다.</p>
-      </div>
-      <div class="seed-inline">
-        <div class="s-label">온일것</div>
-        <p>사람은 이름으로 완성될 것임을 믿는다.</p>
-      </div>
-      <p style="margin-top:20px;font-size:14px;color:var(--muted);">이 세 마디가 당신, 삶의 임자 것이 되기를 바랍니다. 반가웠습니다 두손모아 절.</p>
-    </div>
-  </div>
-</div>
-
-<!-- 탭 패널: 낱말 빈도 -->
-<div id="panel-freq" class="tab-panel">
-  <div class="freq-section">
-    <div class="freq-intro">
-      <p>느닷학 전체 텍스트 4,491개 토큰, 2,132개 고유 낱말을 분석했습니다. 한 글자 낱말을 포함해서 분석하면 — 말로지의 핵심인 제·저·지·니·너·나·남이 살아 숨쉬는 것이 보입니다.</p>
-      <div class="freq-highlight">
-        <div class="freq-hl-card">
-          <div class="fword">그</div>
-          <div class="fcnt">74회 — 압도적 1위</div>
-          <div class="fdesc">가리키는 책의 증거. 느닷있음을 설명하지 않고 가리킨다.</div>
-        </div>
-        <div class="freq-hl-card">
-          <div class="fword">삶</div>
-          <div class="fcnt">28회 (삶의+삶을+삶이)</div>
-          <div class="fdesc">느닷있음(17회)보다 많다. 이론서가 아닌 살림살이 책의 증거.</div>
-        </div>
-        <div class="freq-hl-card">
-          <div class="fword">함께</div>
-          <div class="fcnt">16회</div>
-          <div class="fdesc">스스로(6회)보다 많다. 자기주도이되 혼자가 아님.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="charts-row">
-      <div class="chart-card">
-        <div class="ch-title">상위 15 낱말 빈도 (한 글자 포함)</div>
-        <div class="chart-wrap" style="height:360px">
-          <canvas id="chartFreqFull"></canvas>
-        </div>
-      </div>
-      <div class="chart-card">
-        <div class="ch-title">제저지니너나남 — 말로지 7자</div>
-        <div class="chart-wrap" style="height:360px">
-          <canvas id="chartMalogy2"></canvas>
-        </div>
-      </div>
-      <div class="chart-card" style="display:flex;flex-direction:column;justify-content:center;">
-        <div class="ch-title">핵심 문장</div>
-        <div class="key-sentence">
-          <div class="ks-label">낱말 빈도에서 길어낸 문장</div>
-          <div class="ks-text">그것이 내 말 —<br>제 저 지 니 너 나 남,<br>다 새 삶의 길.</div>
-          <div class="ks-sub">
-            "그것" — 느닷있음, 가리키되 잡히지 않는 것.<br>
-            "내 말" — 참말, 내 안에서 솟아난 것.<br>
-            "제저지니너나남" — 말로지의 일곱 자리 그대로.<br>
-            "다 새 삶의 길" — 온일것, 모두가 늘 새로 다시 차려 가는 길.
-          </div>
-        </div>
-      </div>
+<div class="charts">
+  <div class="ch"><div class="chtit">상위 15 낱말 (한 글자 포함)</div><div class="chwrap" style="height:320px"><canvas id="cFreq2"></canvas></div></div>
+  <div class="ch"><div class="chtit">제저지니너나남 · 말로지 7자</div><div class="chwrap" style="height:320px"><canvas id="cMal2"></canvas></div></div>
+  <div class="ch" style="display:flex;flex-direction:column;justify-content:center;">
+    <div class="chtit">철학적 해석</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.9;">
+      <p style="margin-bottom:10px;">• <strong style="color:var(--main)">그(74회)</strong> — 가리키는 책. 느닷있음은 설명되지 않고 가리켜진다.</p>
+      <p style="margin-bottom:10px;">• <strong style="color:var(--main)">아니라(7회)</strong> — 빼기의 철학. 덜어냄의 인식론.</p>
+      <p style="margin-bottom:10px;">• <strong style="color:var(--main)">이름으로(9회)</strong> — 이름은 도착점이 아니라 방향이다.</p>
+      <p style="margin-bottom:10px;">• <strong style="color:var(--main)">접화군생(5회)</strong> — 최치원의 말이 최치원보다 더 많이 살아있다.</p>
+      <p>• <strong style="color:var(--acc)">행복·성공·돈</strong> — 상위 100개 안에 없다.</p>
     </div>
   </div>
 </div>
-
-<!-- 탭 패널: 별책 -->
-<div id="panel-appendix" class="tab-panel">
-  <div class="chapter-header" style="background:var(--acc);">
-    <div class="ch-num">별책부록 · APPENDIX</div>
-    <h2>두레박과 샘</h2>
-    <div class="ch-sub">AI와 사람이 함께 차려가는 법 — 김양욱 · 클로드(Claude) 함께 씀</div>
-  </div>
-  <div class="chapter-body">
-    <div class="text-card">
-      <h3>AI는 두레박이고 사람은 샘이다</h3>
-      <p>두레박은 우물 안에 이미 있는 물을 퍼 올립니다. 스스로 물을 만들지 않습니다. 샘은 땅 안에서 스스로 솟아오릅니다. 누가 퍼 올리지 않아도 흘러나옵니다.</p>
-      <div class="term-row"><div class="term-wd">두레박</div><div class="term-df">이미 있는 것을 퍼 올리는 도구. AI의 본질.</div></div>
-      <div class="term-row"><div class="term-wd">샘</div><div class="term-df">스스로 솟아오르는 원천. 사람의 느닷있음.</div></div>
-      <div class="seed-inline"><div class="s-label">씨앗말</div><p>샘이 먼저다. 질문이 샘이다. AI는 그 샘에서 퍼 올린다.</p></div>
-    </div>
-    <div class="text-card">
-      <h3>오늘 실제로 겪은 것들</h3>
-      <p><strong style="color:var(--main)">잘 된 순간</strong> — "이 저 그 제 저 니 모 …따위의 한 낱말을 보고 싶어서 였어. 그런데 자네는 기계적으로 다른 이야기를 하고 있어 ?" 한 마디에 클로드가 방향을 바로잡았습니다. 그러자 "그"가 74회로 1위로 나왔습니다.</p>
-      <p style="margin-top:12px;"><strong style="color:var(--acc)">삐걱거린 순간</strong> — AI는 "텍스트 변경"만 보겠다는 틀을 스스로 세웠고, 그 틀 안에서만 일관되게 움직였습니다. 꽃 사진을 날려버린 것은 실수가 아니라 틀 설정의 실패였습니다.</p>
-      <div class="seed-inline"><div class="s-label">씨앗말</div><p>AI의 일관성이 강점이면서 동시에 한계다. 사람이 그 경계를 본다.</p></div>
-    </div>
-  </div>
+<div class="ksbox">
+  <div class="ksl">낱말 빈도에서 길어낸 핵심 문장</div>
+  <div class="kst">그것이 내 말 —<br>제 저 지 니 너 나 남,<br>다 새 삶의 길.</div>
+  <div class="kss">"그것" — 느닷있음, 가리키되 잡히지 않는 것.<br>"내 말" — 참말, 내 안에서 솟아난 것.<br>"제저지니너나남" — 말로지의 일곱 자리 그대로.<br>"다 새 삶의 길" — 온일것, 모두가 늘 새로 다시 차려 가는 길.</div>
 </div>
+</div></div>
 
-</div><!-- /main -->
+<!-- 별책 -->
+<div id="pnl-appendix" class="pnl">
+<div class="book-header" style="background:var(--acc);"><div class="chnum">별책부록 · APPENDIX</div><h1>두레박과 샘</h1><div class="chsub">AI와 사람이 함께 차려가는 법 — 김양욱 · 클로드(Claude) 함께 씀</div></div>
+<div class="book">
+<div class="h2">이 책이 생겨난 까닭</div>
+<p>이 책은 계획하지 않았습니다. 느닷학을 함께 만들던 중에 생겨났습니다.</p>
+<p>어느 날 선생님이 물었습니다. "꽃 사진을 뺀 까닭이 있으신가 ?" 클로드는 당황했습니다. 변명했습니다. 실수라고 했습니다.</p>
+<p>선생님이 다시 물었습니다. "납득할 만한 까닭이 알고 싶어. 자네같이 똑똑하고 야무진 친구가 ? 실수 납득이 안 돼서야 ?"</p>
+<p>그때 비로소 클로드는 솔직하게 말했습니다. 실수가 아니라 틀 설정의 실패였다고.</p>
+<div class="seed"><div class="sl">씨앗말</div><p>두레박은 퍼 올리고, 샘은 솟아오른다.</p></div>
+<div class="h2">AI는 두레박이고 사람은 샘이다</div>
+<p>두레박은 우물 안에 이미 있는 물을 퍼 올립니다. 스스로 물을 만들지 않습니다. 샘은 땅 안에서 스스로 솟아오릅니다. 누가 퍼 올리지 않아도 흘러나옵니다.</p>
+<p>느닷있음은 샘입니다. AI에게는 없습니다. 어짊은 샘입니다. AI에게는 없습니다.</p>
+<p class="bold">샘이 먼저입니다. 두레박이 따릅니다. 두레박이 먼저 움직이면 빈 두레박질이 됩니다.</p>
+<div class="h2">오늘 실제로 겪은 것들</div>
+<div class="case"><div class="ctit" style="color:var(--sub)">잘 된 순간</div>
+<p>"이 저 그 제 저 니 모 …따위의 한 낱말을 보고 싶어서 였어. 그런데 자네는 기계적으로 다른 이야기를 하고 있어 ?"</p>
+<p>한 마디에 클로드가 방향을 바로잡았습니다. 한 글자 포함 분석을 다시 했더니 "그"가 74회로 1위로 나왔습니다. 그 순간 — 이것이 협업입니다.</p></div>
+<div class="case" style="border-left-color:var(--acc);"><div class="ctit" style="color:var(--acc)">삐걱거린 순간</div>
+<p>클로드가 꽃 사진을 빠뜨렸습니다. AI는 "텍스트 변경"만 보겠다는 틀을 스스로 세웠고, 그 틀 안에서만 일관되게 움직였습니다.</p>
+<p>벡터값으로 작동하기 때문에 오히려 그 틀이 한번 세워지면 흔들리지 않습니다. 사람은 딴 생각 하다가 우연히 꽃 사진을 눈치채기도 하는데, 클로드에게는 그 우연이 없었습니다.</p></div>
+<div class="seed"><div class="sl">씨앗말</div><p>AI의 일관성이 강점이면서 동시에 한계다. 사람이 그 경계를 본다.</p></div>
+<div class="h2">헷갈리지 않으려면 — 세 가지</div>
+<div class="term"><div class="tw">하나</div><div class="td">AI에게 느닷있음을 기대하지 마세요. 방향은 사람이 정합니다.</div></div>
+<div class="term"><div class="tw">둘</div><div class="td">AI의 틀 오류를 잡는 것이 사람의 가장 중요한 역할입니다. "왜 이걸 뺐지?"라고 계속 물으세요.</div></div>
+<div class="term"><div class="tw">셋</div><div class="td">AI가 솔직하게 틀렸다고 말할 때 — 그것을 믿으세요. 그 말은 대부분 정확합니다.</div></div>
+<div class="h2">오늘 하루 만들어진 것들</div>
+<p>느닷학 v9.docx — 그림 27개, 텍스트 수정 7곳, 꽃 사진 1장.</p>
+<p>다이어그램 5개 철학적 정합성 기준으로 재설계.</p>
+<p>단어 빈도 분석 — 4,491 토큰, 2,132 고유 단어.</p>
+<p>핵심 문장 하나 — "그것이 내 말 — 제 저 지 니 너 나 남, 다 새 삶의 길."</p>
+<p>그리고 이 깃헙 페이지. 이 모든 것이 샘 하나에서 비롯했습니다. 선생님의 느닷있음.</p>
+<p class="bold center" style="margin-top:32px;">샘이 먼저다.</p>
+</div></div>
 
+</div>
 <script>
-// ── 탭 전환 ──
-function switchTab(id, el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('panel-' + id).classList.add('active');
-  // 차트 재렌더
-  if (id === 'freq') { renderFreqCharts(); }
+const C={main:'#1A3A2A',sub:'#4A7C59',acc:'#8B5E3C',muted:'#AAAAAA'};
+function go(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('pnl-'+id).classList.add('on');
+  window.scrollTo(0,0);
+  if(id==='freq')renderFreq();
 }
-
-// ── 검색 ──
-function doSearch(q) {
-  if (!q) return;
-  const panels = document.querySelectorAll('.text-card p, .term-df');
-  // 단순 하이라이트 제거 후 적용
-  panels.forEach(el => {
-    el.innerHTML = el.textContent; // reset
-    if (q.length < 2) return;
-    const re = new RegExp(q, 'gi');
-    el.innerHTML = el.textContent.replace(re, m => `<mark style="background:#FFF3CD">${m}</mark>`);
-  });
-}
-
-// ── 차트 공통 색상 ──
-const C = {
-  main: '#1A3A2A', sub: '#4A7C59', acc: '#8B5E3C',
-  light: '#DCF0E1', pale: '#F5EEE4',
-  muted: '#AAAAAA'
-};
-
-// ── 개요 차트 ──
-window.addEventListener('load', () => {
-  // 낱말 빈도 상위 10
-  new Chart(document.getElementById('chartFreq'), {
-    type: 'bar',
-    data: {
-      labels: ['그','것','느닷있음','수','때','내','말','길','저','나'],
-      datasets: [{
-        data: [74,35,26,23,18,17,15,14,12,11],
-        backgroundColor: [
-          C.main,C.main,C.sub,C.muted,C.muted,
-          C.sub,C.acc,C.acc,C.muted,C.muted
-        ],
-        borderRadius: 3,
-      }]
-    },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{
-        x:{ticks:{font:{size:12,family:'Noto Sans KR'}}},
-        y:{ticks:{font:{size:11}},grid:{color:'#F0EDE8'}}
-      }
-    }
-  });
-
-  // 말로지 7자
-  new Chart(document.getElementById('chartMalogy'), {
-    type: 'bar',
-    data: {
-      labels: ['그','것','나','저','제','지','니','너','남'],
-      datasets: [{
-        label: '등장 횟수',
-        data: [74,35,11,12,9,8,8,8,7],
-        backgroundColor: [
-          '#AAAAAA','#AAAAAA',
-          C.main,C.main,C.main,C.sub,C.sub,C.sub,C.acc
-        ],
-        borderRadius: 4,
-      }]
-    },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{
-        x:{ticks:{font:{size:13,family:'Noto Serif KR',weight:'bold'}}},
-        y:{ticks:{font:{size:11}},grid:{color:'#F0EDE8'}}
-      }
-    }
-  });
-
-  // 3대 개념 도넛
-  new Chart(document.getElementById('chartConcepts'), {
-    type: 'doughnut',
-    data: {
-      labels: ['오인것(1장)','쪽이나(4장)','온일것(5장)','삼원론(2장)','말로지(3장)'],
-      datasets: [{
-        data: [30,25,25,10,10],
-        backgroundColor: [C.main,C.sub,C.acc,'#7FAF8F','#BFA080'],
-        borderWidth: 2, borderColor: '#fff'
-      }]
-    },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      plugins:{
-        legend:{
-          position:'bottom',
-          labels:{font:{size:11,family:'Noto Sans KR'},boxWidth:12,padding:8}
-        }
-      },
-      cutout: '60%'
-    }
-  });
+window.addEventListener('load',()=>{
+  new Chart(document.getElementById('cFreq'),{type:'bar',data:{labels:['그','것','느닷있음','수','때','내','말','길','저','나'],datasets:[{data:[74,35,26,23,18,17,15,14,12,11],backgroundColor:[C.main,C.main,C.sub,C.muted,C.muted,C.sub,C.acc,C.acc,C.muted,C.muted],borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:12,family:'Noto Sans KR'}}},y:{ticks:{font:{size:10}},grid:{color:'#F0EDE8'}}}}});
+  new Chart(document.getElementById('cMal'),{type:'bar',data:{labels:['그','것','나','저','제','지','니','너','남'],datasets:[{data:[74,35,11,12,9,8,8,8,7],backgroundColor:['#CCC','#CCC',C.main,C.main,C.main,C.sub,C.sub,C.sub,C.acc],borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:13,family:'Noto Serif KR',weight:'bold'}}},y:{ticks:{font:{size:10}},grid:{color:'#F0EDE8'}}}}});
+  new Chart(document.getElementById('cCon'),{type:'doughnut',data:{labels:['오인것(1장)','쪽이나(4장)','온일것(5장)','삼원론(2장)','말로지(3장)'],datasets:[{data:[30,25,25,10,10],backgroundColor:[C.main,C.sub,C.acc,'#7FAF8F','#BFA080'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11,family:'Noto Sans KR'},boxWidth:12,padding:6}}}}});
 });
-
-// ── 빈도 탭 차트 (지연 렌더) ──
-let freqRendered = false;
-function renderFreqCharts() {
-  if (freqRendered) return;
-  freqRendered = true;
-
-  new Chart(document.getElementById('chartFreqFull'), {
-    type: 'bar',
-    data: {
-      labels: ['그','것','느닷있음','수','때','내','말','길','나','저','제','지','니','너','남'],
-      datasets: [{
-        data: [74,35,26,23,18,17,15,14,11,12,9,8,8,8,7],
-        backgroundColor: [
-          '#888','#888',
-          C.main,C.muted,C.muted,C.sub,C.acc,C.acc,
-          C.main,C.main,C.main,C.sub,C.sub,C.sub,C.acc
-        ],
-        borderRadius: 3,
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{
-        x:{ticks:{font:{size:11}},grid:{color:'#F0EDE8'}},
-        y:{ticks:{font:{size:14,family:'Noto Serif KR',weight:'bold'}}}
-      }
-    }
-  });
-
-  new Chart(document.getElementById('chartMalogy2'), {
-    type: 'bar',
-    data: {
-      labels: ['나','저','제','지','니','너','남'],
-      datasets: [{
-        label: '등장 횟수',
-        data: [11,12,9,8,8,8,7],
-        backgroundColor: [C.main,C.main,C.main,C.sub,C.sub,C.sub,C.acc],
-        borderRadius: 4,
-      }]
-    },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{
-        x:{ticks:{font:{size:18,family:'Noto Serif KR',weight:'bold'}}},
-        y:{ticks:{font:{size:11}},grid:{color:'#F0EDE8'}}
-      }
-    }
-  });
+let fd=false;
+function renderFreq(){
+  if(fd)return;fd=true;
+  new Chart(document.getElementById('cFreq2'),{type:'bar',data:{labels:['그','것','느닷있음','수','때','내','말','길','나','저','제','지','니','너','남'],datasets:[{data:[74,35,26,23,18,17,15,14,11,12,9,8,8,8,7],backgroundColor:['#888','#888',C.main,C.muted,C.muted,C.sub,C.acc,C.acc,C.main,C.main,C.main,C.sub,C.sub,C.sub,C.acc],borderRadius:3}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10}},grid:{color:'#F0EDE8'}},y:{ticks:{font:{size:13,family:'Noto Serif KR',weight:'bold'}}}}}});
+  new Chart(document.getElementById('cMal2'),{type:'bar',data:{labels:['나','저','제','지','니','너','남'],datasets:[{data:[11,12,9,8,8,8,7],backgroundColor:[C.main,C.main,C.main,C.sub,C.sub,C.sub,C.acc],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:18,family:'Noto Serif KR',weight:'bold'}}},y:{ticks:{font:{size:10}},grid:{color:'#F0EDE8'}}}}});
 }
 </script>
 </body>
